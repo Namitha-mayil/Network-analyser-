@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1"><i class="fa-solid fa-circle-info me-2 text-primary"></i>About the Project</h2>
+        <p class="text-muted">Documentation and viva preparation guide.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-8">
+        <div class="cyber-card mb-4">
+            <div class="cyber-card-header">
+                <i class="fa-solid fa-book me-2"></i>Project Overview
+            </div>
+            <div class="card-body p-4" style="line-height: 1.8;">
+                <p>The <strong>AI-Based Network Traffic Analyzer</strong> is a cybersecurity application designed to monitor, analyze, and classify network traffic using Machine Learning techniques. The system processes network logs and predicts whether the traffic is Normal or constitutes an attack.</p>
+                
+                <h5 class="text-primary mt-4 mb-3 fw-semibold">Project Objective</h5>
+                <p>Build a web-based intrusion detection system (IDS) that uses the <strong>Logistic Regression</strong> algorithm to automatically classify traffic from the <strong>NSL-KDD dataset</strong> into five categories:</p>
+                <ul>
+                    <li><span class="text-success fw-bold">Normal:</span> Safe traffic</li>
+                    <li><span class="text-danger fw-bold">DoS (Denial of Service):</span> Attempts to shut down a machine or network.</li>
+                    <li><span class="text-warning fw-bold">Probe:</span> Surveillance and probing to find vulnerabilities.</li>
+                    <li><span class="text-danger fw-bold">R2L (Root to Local):</span> Unauthorized access from a remote machine.</li>
+                    <li><span class="text-danger fw-bold">U2R (User to Root):</span> Unauthorized access to local superuser privileges.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="cyber-card">
+            <div class="cyber-card-header">
+                <i class="fa-solid fa-chalkboard-user me-2"></i>Viva Questions & Answers
+            </div>
+            <div class="card-body p-4">
+                <div class="accordion accordion-flush cyber-accordion" id="vivaAccordion">
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                                <strong class="text-primary me-2">Q1.</strong> What is Network Traffic?
+                            </button>
+                        </h2>
+                        <div id="q1" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                            <div class="accordion-body">
+                                Network traffic is the amount of data moving across a network at any given time. In this project, it represents the packets of data sent between computers, which we analyze to detect anomalies.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                                <strong class="text-primary me-2">Q2.</strong> What is Intrusion Detection?
+                            </button>
+                        </h2>
+                        <div id="q2" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                            <div class="accordion-body">
+                                Intrusion Detection is the process of monitoring network events and analyzing them for signs of possible incidents, violations, or imminent threats to security policies or acceptable use policies.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+                                <strong class="text-primary me-2">Q3.</strong> What is the NSL-KDD dataset?
+                            </button>
+                        </h2>
+                        <div id="q3" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                            <div class="accordion-body">
+                                It is a widely used benchmark dataset for network intrusion detection. It was created to resolve issues in the older KDD'99 dataset by removing redundant records, making the evaluation of learning algorithms more accurate and objective.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q4">
+                                <strong class="text-primary me-2">Q4.</strong> Why use Logistic Regression?
+                            </button>
+                        </h2>
+                        <div id="q4" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                            <div class="accordion-body">
+                                Logistic Regression is a statistical method for analyzing datasets with independent variables that determine a categorical outcome. It is <strong>simple, highly computationally efficient, fast to train, easy to interpret</strong>, and performs remarkably well on linearly separable features commonly found in baseline traffic analysis, making it highly appropriate for an academic, lightweight IDS implementation.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q5">
+                                <strong class="text-primary me-2">Q5.</strong> Why was Flask chosen for the interface?
+                            </button>
+                        </h2>
+                        <div id="q5" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                            <div class="accordion-body">
+                                Flask is a lightweight Python web framework. It perfectly bridges the gap between our Python-based Machine Learning model (Scikit-Learn) and the HTML/CSS/JS frontend, allowing users to interact with the trained model easily through a web browser without needing to run terminal commands.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="cyber-card h-100">
+            <div class="cyber-card-header">
+                <i class="fa-solid fa-sitemap me-2"></i>System Architecture
+            </div>
+            <div class="card-body p-4 text-center">
+                <pre class="text-start small" style="color: var(--text-body); font-family: monospace;">
+      NSL-KDD DATASET
+            │
+            ▼
+    DATA PREPROCESSING
+            │
+   ┌────────┼────────┐
+   ▼        ▼        ▼
+ Clean   Encode   Scale
+   │        │        │
+   └────────┼────────┘
+            ▼
+   LOGISTIC REGRESSION
+            │
+            ▼
+      TRAINED MODEL
+            │
+            ▼
+       FLASK SERVER
+            │
+   ┌────────┴────────┐
+   ▼                 ▼
+CSV UPLOAD     MANUAL INPUT
+   │                 │
+   └────────┬────────┘
+            ▼
+       PREDICTION
+            │
+            ▼
+      NORMAL / DoS / 
+     Probe / R2L / U2R
+            │
+            ▼
+      WEB DASHBOARD
+                </pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1"><i class="fa-solid fa-upload me-2 text-primary"></i>Analyze Traffic</h2>
+        <p class="text-muted">Upload a CSV file containing network traffic records for batch intrusion detection.</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6">
+        <div class="cyber-card">
+            <div class="cyber-card-header">
+                <i class="fa-solid fa-file-csv me-2"></i>Upload Dataset
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="file" class="form-label">Select CSV File (NSL-KDD Format)</label>
+                        <input class="form-control cyber-input" type="file" id="file" name="file" accept=".csv" required>
+                        <div class="form-text text-muted mt-2">
+                            <i class="fa-solid fa-circle-info me-1"></i> Ensure the file has 41 feature columns matching the trained model.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-cyber w-100 py-2">
+                        <i class="fa-solid fa-microchip me-2"></i>Analyze Traffic
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="cyber-card h-100">
+            <div class="cyber-card-header">
+                <i class="fa-solid fa-terminal me-2"></i>Instructions
+            </div>
+            <div class="card-body p-4 text-muted">
+                <p>To analyze batch network traffic:</p>
+                <ol>
+                    <li class="mb-2">Click <strong>Choose File</strong> and select a valid CSV dataset.</li>
+                    <li class="mb-2">Click <strong>Analyze Traffic</strong> to start the classification engine.</li>
+                    <li class="mb-2">The AI model will preprocess the data and classify each record into Normal or an attack category (DoS, Probe, R2L, U2R).</li>
+                    <li>Review the results in the table below.</li>
+                </ol>
+                <div class="mt-4 p-3 rounded" style="background-color: var(--primary-light); border-left: 3px solid var(--primary);">
+                    <i class="fa-solid fa-lightbulb text-primary me-2"></i> Use <code>sample_traffic.csv</code> included in the project directory for testing.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if uploaded %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="fw-bold mb-3 border-bottom pb-2">Analysis Results</h3>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="cyber-card text-center p-3">
+            <h5 class="text-muted small text-uppercase">Total Processed</h5>
+            <div class="fs-3 fw-bold">{{ summary.total }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="cyber-card text-center p-3" style="border-color: var(--success)">
+            <h5 class="text-success small text-uppercase">Normal Traffic</h5>
+            <div class="fs-3 fw-bold text-success">{{ summary.normal }} <span class="fs-6 text-muted">({{ summary.normal_pct }}%)</span></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="cyber-card text-center p-3" style="border-color: var(--danger)">
+            <h5 class="text-danger small text-uppercase">Malicious Traffic</h5>
+            <div class="fs-3 fw-bold text-danger">{{ summary.attack }} <span class="fs-6 text-muted">({{ summary.attack_pct }}%)</span></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="cyber-card text-center p-3">
+            <h5 class="text-muted small text-uppercase">Attack Distribution</h5>
+            <div class="d-flex justify-content-center gap-3 small mt-2">
+                <div><span class="text-danger">DoS:</span> {{ summary.dos }}</div>
+                <div><span class="text-warning">Prb:</span> {{ summary.probe }}</div>
+            </div>
+            <div class="d-flex justify-content-center gap-3 small mt-1">
+                <div><span class="text-danger">R2L:</span> {{ summary.r2l }}</div>
+                <div><span class="text-danger">U2R:</span> {{ summary.u2r }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cyber-card">
+    <div class="cyber-card-header">
+        <i class="fa-solid fa-list me-2"></i>Traffic Records (Showing top 100)
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table cyber-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Protocol</th>
+                        <th>Service</th>
+                        <th>Flag</th>
+                        <th>Src Bytes</th>
+                        <th>Dst Bytes</th>
+                        <th>Prediction</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in records %}
+                    <tr>
+                        <td class="ps-4">{{ loop.index }}</td>
+                        <td>{{ row.get('protocol_type', 'N/A') }}</td>
+                        <td>{{ row.get('service', 'N/A') }}</td>
+                        <td>{{ row.get('flag', 'N/A') }}</td>
+                        <td>{{ row.get('src_bytes', '0') }}</td>
+                        <td>{{ row.get('dst_bytes', '0') }}</td>
+                        <td class="fw-bold">{{ row.prediction }}</td>
+                        <td>
+                            {% if row.prediction == 'Normal' %}
+                                <span class="status-badge status-safe"><i class="fa-solid fa-circle-check me-1"></i> Safe</span>
+                            {% elif row.prediction == 'Probe' %}
+                                <span class="status-badge status-warning"><i class="fa-solid fa-triangle-exclamation me-1"></i> Attack</span>
+                            {% else %}
+                                <span class="status-badge status-attack"><i class="fa-solid fa-skull-crossbones me-1"></i> Attack</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
